@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
           bodyMedium: TextStyle(
             fontSize: 20,
             fontFamily: 'InterTight',
-            fontWeight: FontWeight.w500,
+            fontWeight: FontWeight.bold,
           ),
 
           // Texto pequeno
@@ -64,6 +64,11 @@ class MyApp extends StatelessWidget {
             fontSize: 14,
             fontFamily: 'InterTight',
             fontWeight: FontWeight.w200,
+          ),
+
+          // Texto alerts
+          displaySmall: TextStyle(
+            fontSize: 16,
           ),
         ),
       ),
