@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:contadordevoltaspp/components/firebase_connection.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:wakelock/wakelock.dart';
 
 import 'Models/run.dart';
 
@@ -31,6 +32,13 @@ class _HomeState extends State<Home> {
   bool _isStarted = false; // Controla o botão de finalizar
   bool _isPaused = true; // Controla o botão Play/Pause
 
+  @override
+  void initState() {
+    super.initState();
+
+    Wakelock.enable();
+  }
+
   // Controla os sons do aplicativo
   Future<void> handleAudio() async {
     final player = AudioPlayer();
@@ -56,12 +64,14 @@ class _HomeState extends State<Home> {
         title,
         style: const TextStyle(
           fontSize: 18,
+          fontWeight: FontWeight.bold,
         ),
       ),
       content: Text(
         content,
         style: const TextStyle(
           fontSize: 16,
+          fontWeight: FontWeight.normal,
         ),
       ),
       actions: action,
@@ -77,7 +87,8 @@ class _HomeState extends State<Home> {
       title: Text(
         title,
         style: const TextStyle(
-          fontSize: 16,
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
         ),
       ),
       content: content,
@@ -157,7 +168,7 @@ class _HomeState extends State<Home> {
   // Controla o botão de Play/Pause do cronômetro
   void handleTime() async {
     setState(() {
-      _isStarted = true;
+      _isStarted = !_isStarted;
       _isPaused = !_isPaused;
     });
 
@@ -209,7 +220,7 @@ class _HomeState extends State<Home> {
     showDialog(
       context: context,
       builder: (context) => alertDialogFinish(
-        title: 'Aguarde...',
+        title: 'AGUARDE',
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -217,12 +228,10 @@ class _HomeState extends State<Home> {
               color: Theme.of(context).colorScheme.primary,
             ),
             const SizedBox(height: 20),
-            const Text(
+            Text(
               'Os dados estão sendo guardados',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 18,
-              ),
+              style: Theme.of(context).textTheme.displaySmall,
             ),
           ],
         ),
@@ -250,22 +259,20 @@ class _HomeState extends State<Home> {
         context: context,
         builder: (context) => alertDialogFinish(
           title: 'TUDO CERTO',
-          content: const Column(
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 20),
-              FaIcon(
+              const SizedBox(height: 20),
+              const FaIcon(
                 FontAwesomeIcons.circleCheck,
                 size: 55,
                 color: Colors.green,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 'Os dados foram guardados corretamente!',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                ),
+                style: Theme.of(context).textTheme.displaySmall,
               ),
             ],
           ),
@@ -299,22 +306,20 @@ class _HomeState extends State<Home> {
         context: context,
         builder: (context) => alertDialogFinish(
           title: 'ERRO',
-          content: const Column(
+          content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 20),
-              FaIcon(
+              const SizedBox(height: 20),
+              const FaIcon(
                 FontAwesomeIcons.circleXmark,
                 size: 55,
                 color: Colors.red,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 'Os dados não foram guardados corretamente! Tente novamente ou tire um print para guardar mais tarde.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                ),
+                style: Theme.of(context).textTheme.displaySmall,
               ),
             ],
           ),
@@ -452,7 +457,7 @@ class _HomeState extends State<Home> {
                   onTap: () => showDialog(
                     context: context,
                     builder: (context) => alertDialog(
-                      title: 'CONFIRME A AÇÃO',
+                      title: 'CONFIRMAR AÇÃO',
                       content: 'Quer diminuir a distância?',
                       action: [
                         textButton(
@@ -486,15 +491,14 @@ class _HomeState extends State<Home> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Adicionar distância
-                AnimatedSize(
+                AnimatedContainer(
                   duration: const Duration(milliseconds: 500),
-                  curve: Curves.easeInOutQuart,
+                  curve: Curves.easeInOutBack,
+                  width: _isStarted
+                      ? media.width * 0.7 - 5
+                      : media.width * 0.5 - 5,
+                  height: media.height * 0.3 - 5,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      fixedSize: _isStarted
-                          ? Size(media.width * 0.7 - 5, media.height * 0.3 - 5)
-                          : Size(media.width * 0.5 - 5, media.height * 0.3 - 5),
-                    ),
                     onPressed: () => handleDistance(action: DistanceAction.add),
                     child: faIcon(
                       icon: FontAwesomeIcons.plus,
@@ -507,17 +511,14 @@ class _HomeState extends State<Home> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     // Finalizar
-                    AnimatedSize(
+                    AnimatedContainer(
                       duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOutQuart,
+                      curve: Curves.easeInOutBack,
+                      width: _isStarted
+                          ? media.width * 0.3 - 5
+                          : media.width * 0.5 - 5,
+                      height: media.height * 0.15 - 5,
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: _isStarted
-                              ? Size(media.width * 0.3 - 5,
-                                  media.height * 0.15 - 5)
-                              : Size(media.width * 0.5 - 5,
-                                  media.height * 0.15 - 5),
-                        ),
                         onPressed: () => {
                           // Pausa o timer
                           timer.cancel(),
@@ -528,12 +529,13 @@ class _HomeState extends State<Home> {
                           // Altera o botão de Play/Pause para pausado
                           setState(() {
                             _isPaused = true;
+                            _isStarted = false;
                           }),
 
                           showDialog(
                             context: context,
                             builder: (context) => alertDialog(
-                              title: 'CONFIRME A AÇÃO',
+                              title: 'CONFIRMAR AÇÃO',
                               content: 'Quer finalizar?',
                               action: [
                                 textButton(
@@ -559,17 +561,14 @@ class _HomeState extends State<Home> {
                     ),
 
                     // Play / Pause
-                    AnimatedSize(
+                    AnimatedContainer(
                       duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOutQuart,
+                      curve: Curves.easeInOutBack,
+                      width: _isStarted
+                          ? media.width * 0.3 - 5
+                          : media.width * 0.5 - 5,
+                      height: media.height * 0.15 - 5,
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          fixedSize: _isStarted
-                              ? Size(media.width * 0.3 - 5,
-                                  media.height * 0.15 - 5)
-                              : Size(media.width * 0.5 - 5,
-                                  media.height * 0.15 - 5),
-                        ),
                         onPressed: handleTime,
                         child: _isPaused
                             ? faIcon(
