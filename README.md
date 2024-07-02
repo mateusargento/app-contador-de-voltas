@@ -22,4 +22,6 @@ Ao realizar um exercício físico como uma corrida ou uma caminhada em um percur
 <br/><br/>
 
 ## Screenshot
-![App Screenshot](https://raw.githubusercontent.com/mateusargento/contadordevoltas-app/main/assets/images/captura%20de%20tela.png)
+<img src='https://raw.githubusercontent.com/mateusargento/contadordevoltas-app/main/assets/images/captura%20de%20tela.png' alt='Screenshot' style='width: 300px' />
+
+
